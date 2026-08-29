@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rby1-teleop"
+version = "0.1.0"
+description = "Rainbow Robotics RB-Y1 teleoperation: SEW geometric retargeting demos, MuJoCo models/controllers, and hardware glue"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Chuizheng Kong" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+    "mujoco",
+    "geo-kin-core",
+]
+
+[project.optional-dependencies]
+# Hardware: RB-Y1 SDK + XHand vendor stack (lazy imports under control/hw)
+hw = []
+# Device stack for live XR / CSV transcode is currently the monolith checkout
+# (GEO_TELEOP_MONOLITH); this extra will point at xrt_device once split out.
+devices = []
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["rby1_teleop*"]
+
+[tool.setuptools.package-data]
+rby1_teleop = [
+    "assets/specs/*.npz",
+    "assets/sample_motion/*.npz",
+    "assets/urdf/*.urdf",
+    "assets/rby1m/*.xml",
+    "assets/rby1m/assets/**/*",
+    "assets/rby1_with_xhand/*.xml",
+    "assets/rby1_with_xhand/XHAND/*",
+    "assets/rby1_with_xhand/LEFT_MOUNT/*",
+    "assets/rby1_with_xhand/RIGHT_MOUNT/*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "geo: needs the private geo_kin_ref package or the licensed geo_kin wheel (skipped on public CI)",
+]

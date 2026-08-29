@@ -1,0 +1,71 @@
+<mujoco>
+    <mesh name="left_hand_link" content_type="model/stl" file="left_hand_link.STL" />
+    <mesh name="left_hand_ee_link" content_type="model/stl" file="left_hand_ee_link.STL" />
+    <mesh name="left_hand_back_link" content_type="model/stl" file="left_hand_back_link.STL" />
+    <mesh name="left_hand_thumb_bend_link" content_type="model/stl" file="left_hand_thumb_bend_link.STL" />
+    <mesh name="left_hand_thumb_rota_link1" content_type="model/stl" file="left_hand_thumb_rota_link1.STL" />
+    <mesh name="left_hand_thumb_rotaback_link1" content_type="model/stl" file="left_hand_thumb_rotaback_link1.STL" />
+    <mesh name="left_hand_thumb_rota_link2" content_type="model/stl" file="left_hand_thumb_rota_link2.STL" />
+    <mesh name="left_hand_thumb_rotaback_link2" content_type="model/stl" file="left_hand_thumb_rotaback_link2.STL" />
+    <mesh name="left_hand_thumb_rota_tip" content_type="model/stl" file="left_hand_thumb_rota_tip.STL" />
+    <mesh name="left_hand_index_bend_link" content_type="model/stl" file="left_hand_index_bend_link.STL" />
+    <mesh name="left_hand_index_rota_link1" content_type="model/stl" file="left_hand_index_rota_link1.STL" />
+    <mesh name="left_hand_index_rotaback_link1" content_type="model/stl" file="left_hand_index_rotaback_link1.STL" />
+    <mesh name="left_hand_index_rota_link2" content_type="model/stl" file="left_hand_index_rota_link2.STL" />
+    <mesh name="left_hand_index_rotaback_link2" content_type="model/stl" file="left_hand_index_rotaback_link2.STL" />
+    <mesh name="left_hand_index_rota_tip" content_type="model/stl" file="left_hand_index_rota_tip.STL" />
+    <mesh name="left_hand_mid_link1" content_type="model/stl" file="left_hand_mid_link1.STL" />
+    <mesh name="left_hand_midback_link1" content_type="model/stl" file="left_hand_midback_link1.STL" />
+    <mesh name="left_hand_mid_link2" content_type="model/stl" file="left_hand_mid_link2.STL" />
+    <mesh name="left_hand_midback_link2" content_type="model/stl" file="left_hand_midback_link2.STL" />
+    <mesh name="left_hand_mid_tip" content_type="model/stl" file="left_hand_mid_tip.STL" />
+    <mesh name="left_hand_ring_link1" content_type="model/stl" file="left_hand_ring_link1.STL" />
+    <mesh name="left_hand_ringback_link1" content_type="model/stl" file="left_hand_ringback_link1.STL" />
+    <mesh name="left_hand_ring_link2" content_type="model/stl" file="left_hand_ring_link2.STL" />
+    <mesh name="left_hand_ringback_link2" content_type="model/stl" file="left_hand_ringback_link2.STL" />
+    <mesh name="left_hand_ring_tip" content_type="model/stl" file="left_hand_ring_tip.STL" />
+    <mesh name="left_hand_pinky_link1" content_type="model/stl" file="left_hand_pinky_link1.STL" />
+    <mesh name="left_hand_pinkyback_link1" content_type="model/stl" file="left_hand_pinkyback_link1.STL" />
+    <mesh name="left_hand_pinky_link2" content_type="model/stl" file="left_hand_pinky_link2.STL" />
+    <mesh name="left_hand_pinkyback_link2" content_type="model/stl" file="left_hand_pinkyback_link2.STL" />
+    <mesh name="left_hand_pinky_tip" content_type="model/stl" file="left_hand_pinky_tip.STL" />
+
+    <mesh name="right_hand_link" content_type="model/stl" file="right_hand_link.STL" />
+    <mesh name="right_hand_ee_link" content_type="model/stl" file="right_hand_ee_link.STL" />
+    <mesh name="right_hand_back_link" content_type="model/stl" file="right_hand_back_link.STL" />
+    <mesh name="right_hand_thumb_bend_link" content_type="model/stl" file="right_hand_thumb_bend_link.STL" />
+    <mesh name="right_hand_thumb_rota_link1" content_type="model/stl" file="right_hand_thumb_rota_link1.STL" />
+    <mesh name="right_hand_thumb_rotaback_link1" content_type="model/stl" file="right_hand_thumb_rotaback_link1.STL" />
+    <mesh name="right_hand_thumb_rota_link2" content_type="model/stl" file="right_hand_thumb_rota_link2.STL" />
+    <mesh name="right_hand_thumb_rotaback_link2" content_type="model/stl" file="right_hand_thumb_rotaback_link2.STL" />
+    <mesh name="right_hand_thumb_rota_tip" content_type="model/stl" file="right_hand_thumb_rota_tip.STL" />
+    <mesh name="right_hand_index_bend_link" content_type="model/stl" file="right_hand_index_bend_link.STL" />
+    <mesh name="right_hand_index_rota_link1" content_type="model/stl" file="right_hand_index_rota_link1.STL" />
+    <mesh name="right_hand_index_rotaback_link1" content_type="model/stl" file="right_hand_index_rotaback_link1.STL" />
+    <mesh name="right_hand_index_rota_link2" content_type="model/stl" file="right_hand_index_rota_link2.STL" />
+    <mesh name="right_hand_index_rotaback_link2" content_type="model/stl" file="right_hand_index_rotaback_link2.STL" />
+    <mesh name="right_hand_index_rota_tip" content_type="model/stl" file="right_hand_index_rota_tip.STL" />
+    <mesh name="right_hand_mid_link1" content_type="model/stl" file="right_hand_mid_link1.STL" />
+    <mesh name="right_hand_midback_link1" content_type="model/stl" file="right_hand_midback_link1.STL" />
+    <mesh name="right_hand_mid_link2" content_type="model/stl" file="right_hand_mid_link2.STL" />
+    <mesh name="right_hand_midback_link2" content_type="model/stl" file="right_hand_midback_link2.STL" />
+    <mesh name="right_hand_mid_tip" content_type="model/stl" file="right_hand_mid_tip.STL" />
+    <mesh name="right_hand_ring_link1" content_type="model/stl" file="right_hand_ring_link1.STL" />
+    <mesh name="right_hand_ringback_link1" content_type="model/stl" file="right_hand_ringback_link1.STL" />
+    <mesh name="right_hand_ring_link2" content_type="model/stl" file="right_hand_ring_link2.STL" />
+    <mesh name="right_hand_ringback_link2" content_type="model/stl" file="right_hand_ringback_link2.STL" />
+    <mesh name="right_hand_ring_tip" content_type="model/stl" file="right_hand_ring_tip.STL" />
+    <mesh name="right_hand_pinky_link1" content_type="model/stl" file="right_hand_pinky_link1.STL" />
+    <mesh name="right_hand_pinkyback_link1" content_type="model/stl" file="right_hand_pinkyback_link1.STL" />
+    <mesh name="right_hand_pinky_link2" content_type="model/stl" file="right_hand_pinky_link2.STL" />
+    <mesh name="right_hand_pinkyback_link2" content_type="model/stl" file="right_hand_pinkyback_link2.STL" />
+    <mesh name="right_hand_pinky_tip" content_type="model/stl" file="right_hand_pinky_tip.STL" />
+
+    <mesh name="RIGHT_MOUNT/ee_mount_r" file="../RIGHT_MOUNT/ee_mount_r.obj" />
+    <mesh name="RIGHT_MOUNT/ee_mount_r_collision" file="../RIGHT_MOUNT/ee_mount_r.obj" />
+    <mesh name="LEFT_MOUNT/ee_mount_l" file="../LEFT_MOUNT/ee_mount_l.obj" />
+    <mesh name="LEFT_MOUNT/ee_mount_l_collision" file="../LEFT_MOUNT/ee_mount_l.obj" />
+
+    <material name="hand_black" rgba="0.055 0.055 0.063 1" />
+    <material name="hand_white" rgba="0.941 0.941 0.941 1" />
+</mujoco>

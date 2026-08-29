@@ -1,0 +1,4 @@
+<mujoco>
+      <geom material="191,191,191" mesh="MECANUM_WHEEL" class="visual"/>
+      <geom mesh="MECANUM_WHEEL" class="collision"/>
+</mujoco>

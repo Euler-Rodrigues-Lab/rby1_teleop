@@ -1,0 +1,3 @@
+<mujoco>
+    <mesh file="MECANUM_WHEEL_M.obj"/>
+</mujoco>

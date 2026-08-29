@@ -1,0 +1,20 @@
+<mujoco model="WHEEL">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="235,235,235" specular="0.0" shininess="0.225" rgba="0.921569 0.921569 0.921569 1.000000"/>
+    <mesh file="WHEEL.obj"/>
+  </asset>
+  <worldbody>
+    <body name="WHEEL">
+      <geom material="235,235,235" mesh="WHEEL" class="visual"/>
+      <geom mesh="WHEEL" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

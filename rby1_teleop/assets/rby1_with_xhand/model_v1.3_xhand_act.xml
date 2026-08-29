@@ -1,0 +1,89 @@
+<mujoco model="rby1">
+  <option timestep="0.002" solver="CG" iterations="30" tolerance="1e-6" />
+  <size nuserdata="156" />
+
+  <default>
+    <velocity ctrllimited="true"/>
+    <position ctrllimited="true" kp="8000" dampratio="1" inheritrange="1" />
+
+    <default class="torso_joint">
+      <position ctrllimited="true" kp="10000" dampratio="1"/>
+    </default>
+
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0" />
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh" contype="1" conaffinity="1" />
+    </default>
+    <default class="xhand_no_collision">
+      <geom contype="0" conaffinity="0" />
+    </default>
+    <default class="in-model-collision">
+      <geom group="2" contype="1" conaffinity="1" rgba="0.3 0 0 0.0" />
+    </default>
+  </default>
+  
+  <include file="./rby1_v1.3_xhand_mocap.xml" />
+
+  <actuator>
+    <position name="fr_wheel_act" joint="wheel_fr" />
+    <position name="fl_wheel_act" joint="wheel_fl" />
+    <position name="rr_wheel_act" joint="wheel_rr" />
+    <position name="rl_wheel_act" joint="wheel_rl" />
+
+    <position name="link1_act" joint="torso_0" class="torso_joint" />
+    <position name="link2_act" joint="torso_1" class="torso_joint" />
+    <position name="link3_act" joint="torso_2" class="torso_joint" />
+    <position name="link4_act" joint="torso_3" class="torso_joint" />
+    <position name="link5_act" joint="torso_4" class="torso_joint" />
+    <position name="link6_act" joint="torso_5" class="torso_joint" />
+
+    <position name="left_arm_1_act" joint="left_arm_0" />
+    <position name="left_arm_2_act" joint="left_arm_1" />
+    <position name="left_arm_3_act" joint="left_arm_2" />
+    <position name="left_arm_4_act" joint="left_arm_3" />
+    <position name="left_arm_5_act" joint="left_arm_4" />
+    <position name="left_arm_6_act" joint="left_arm_5" />
+    <position name="left_arm_7_act" joint="left_arm_6" />
+
+    <position name="right_arm_1_act" joint="right_arm_0" />
+    <position name="right_arm_2_act" joint="right_arm_1" />
+    <position name="right_arm_3_act" joint="right_arm_2" />
+    <position name="right_arm_4_act" joint="right_arm_3" />
+    <position name="right_arm_5_act" joint="right_arm_4" />
+    <position name="right_arm_6_act" joint="right_arm_5" />
+    <position name="right_arm_7_act" joint="right_arm_6" />
+
+    <position name="head_0_act" joint="head_0" />
+    <position name="head_1_act" joint="head_1" />
+    <!-- <position name="right_finger_act" joint="gripper_finger_r2" />
+    <position name="left_finger_act" joint="gripper_finger_l1" /> -->
+
+    <position joint="left_hand_thumb_bend_joint" name="left_hand_thumb_bend_joint" />
+    <position joint="left_hand_thumb_rota_joint1" name="left_hand_thumb_rota_joint1" />
+    <position joint="left_hand_thumb_rota_joint2" name="left_hand_thumb_rota_joint2" />
+    <position joint="left_hand_index_bend_joint" name="left_hand_index_bend_joint" />
+    <position joint="left_hand_index_joint1" name="left_hand_index_joint1" />        
+    <position joint="left_hand_index_joint2" name="left_hand_index_joint2" />
+    <position joint="left_hand_mid_joint1" name="left_hand_mid_joint1" />
+    <position joint="left_hand_mid_joint2" name="left_hand_mid_joint2" />
+    <position joint="left_hand_ring_joint1" name="left_hand_ring_joint1" />
+    <position joint="left_hand_ring_joint2" name="left_hand_ring_joint2" />
+    <position joint="left_hand_pinky_joint1" name="left_hand_pinky_joint1" />
+    <position joint="left_hand_pinky_joint2" name="left_hand_pinky_joint2" />
+
+    <position joint="right_hand_thumb_bend_joint" name="right_hand_thumb_bend_joint" />    
+    <position joint="right_hand_thumb_rota_joint1" name="right_hand_thumb_rota_joint1" />
+    <position joint="right_hand_thumb_rota_joint2" name="right_hand_thumb_rota_joint2" />
+    <position joint="right_hand_index_bend_joint" name="right_hand_index_bend_joint" />
+    <position joint="right_hand_index_joint1" name="right_hand_index_joint1" />
+    <position joint="right_hand_index_joint2" name="right_hand_index_joint2" />
+    <position joint="right_hand_mid_joint1" name="right_hand_mid_joint1" />
+    <position joint="right_hand_mid_joint2" name="right_hand_mid_joint2" />
+    <position joint="right_hand_ring_joint1" name="right_hand_ring_joint1" />
+    <position joint="right_hand_ring_joint2" name="right_hand_ring_joint2" />
+    <position joint="right_hand_pinky_joint1" name="right_hand_pinky_joint1" />
+    <position joint="right_hand_pinky_joint2" name="right_hand_pinky_joint2" />
+  </actuator>
+</mujoco>
