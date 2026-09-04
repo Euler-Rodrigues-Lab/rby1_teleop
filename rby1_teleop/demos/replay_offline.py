@@ -148,6 +148,7 @@ def build(args):
     session = resolve_session(
         robot="rby1",
         hand=hand,
+        model_xml=xml,
         control_rate_hz=float(args.max_fr),
         elbow_filter_cutoff_hz=args.elbow_filter_hz,
         collision_avoidance=not args.no_safety_filter,
