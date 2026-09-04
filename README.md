@@ -65,3 +65,8 @@ monolith: point `--monolith_path` or `GEO_TELEOP_MONOLITH` at a checkout for
 MIT licensed. The SEW retargeting solver itself is patented & licensed
 separately (`geo_kin` wheel); this repo runs against the public fallback out
 of the box.
+
+## Citation
+
+If you use the retargeting solver, please cite the paper using the format published on the
+[project website](https://sew-mimic.com/):
