@@ -16,6 +16,29 @@ clamp), XPBD self-collision filtering, and per-finger XHand IK. Retarget modes:
 other arm). The hand is a config choice, not a separate codebase; Sharpa
 support lands next through the same session `hand=` switch.
 
+## Install
+
+Keep a single public-core checkout beside this repository, then sync normally:
+
+```bash
+cd /path/to/Euler-Rodrigues-Lab
+git clone https://github.com/Euler-Rodrigues-Lab/geo_kin_core.git
+git clone https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
+cd rby1_teleop
+uv sync
+```
+
+The public fallback is available after syncing. To use WARP, TCP/C-SEW, or
+another licensed mode, register the supplied RBY1/XHand wheel and license once
+as described in the `geo_kin_core` README, then link the shared build here:
+
+```bash
+uv run geo-kin-provision install
+```
+
+The private binary is stored once outside every checkout and remains linked
+across normal `uv sync` and `uv run` operations.
+
 This robot is the reference embodiment of
 [WARP](https://warp-retargeting.github.io) (Whole-Body Retargeting for Learning
 from Offline Human Demonstrations); the WARP experiment/policy pipelines live
