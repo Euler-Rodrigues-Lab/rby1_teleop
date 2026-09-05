@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-geo-kin-core = { path = "../geo_kin_core", editable = true }
+geo-kin-core = { path = "external/geo_kin_core", editable = true }
 
 [tool.geo-kin]
 product = "rby1-xhand"

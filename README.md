@@ -18,21 +18,34 @@ support lands next through the same session `hand=` switch.
 
 ## Install
 
-Keep a single public-core checkout beside this repository, then sync normally:
+Clone with the pinned public-core submodule, then sync normally:
 
 ```bash
-cd /path/to/Euler-Rodrigues-Lab
-git clone https://github.com/Euler-Rodrigues-Lab/geo_kin_core.git
-git clone https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
+git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
 uv sync
 ```
 
-The public fallback is available after syncing. To use WARP, TCP/C-SEW, or
-another licensed mode, register the supplied RBY1/XHand wheel and license once
-as described in the `geo_kin_core` README, then link the shared build here:
+For an existing checkout:
 
 ```bash
+git pull
+git submodule update --init --recursive
+uv sync
+```
+
+The sync installs `external/geo_kin_core`, including the public fallback and
+the `geo-kin-provision` command. To use WARP, TCP/C-SEW, or another licensed
+mode, register the supplied RBY1/XHand wheel and license once per user, then
+link the central build here:
+
+```bash
+uv run geo-kin-provision register \
+  --product rby1-xhand \
+  --wheel /path/to/geo_kin-0.1.0-cp310-abi3-manylinux_2_35_x86_64.whl \
+  --license /path/to/geo_kin_license.toml \
+  --name my-rby1-license \
+  --activate
 uv run geo-kin-provision install
 ```
 
