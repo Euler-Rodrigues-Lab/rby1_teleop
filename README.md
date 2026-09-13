@@ -18,35 +18,35 @@ support lands next through the same session `hand=` switch.
 
 ## Install
 
-Clone with the pinned public-core submodule, then sync normally:
+Keep the developing `XRT_devices` checkout beside this repository. For the current
+local migration (device changes are not published yet), install explicitly:
 
 ```bash
-git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
-uv sync
+uv venv
+uv pip install -e 'external/geo_kin_core[fallback]' -e '../XRT_devices[xr,recording]' -e . pytest
+source .venv/bin/activate
 ```
 
-For an existing checkout:
+Initialize the pinned core submodule if needed:
 
 ```bash
-git pull
 git submodule update --init --recursive
-uv sync
 ```
 
-The sync installs `external/geo_kin_core`, including the public fallback and
+The install includes `external/geo_kin_core`, the public fallback and
 the `geo-kin-provision` command. To use WARP, TCP/C-SEW, or another licensed
 mode, register the supplied RBY1/XHand wheel and license once per user, then
 link the central build here:
 
 ```bash
-uv run geo-kin-provision register \
+geo-kin-provision register \
   --product rby1-xhand \
   --wheel /path/to/geo_kin-0.1.0-cp310-abi3-manylinux_2_35_x86_64.whl \
   --license /path/to/geo_kin_license.toml \
   --name my-rby1-license \
   --activate
-uv run geo-kin-provision install
+geo-kin-provision install
 ```
 
 The private binary is stored once outside every checkout and remains linked
@@ -87,22 +87,107 @@ kinematic MuJoCo follow, drawing the filtered SEW capsules and the human
 skeleton overlay. Live teleop: `python -m rby1_teleop.demos.teleop_xr`
 (Meta Quest over WebRTC; see below).
 
+## Test Quest or webcam in simulation
+
+```bash
+# Quest: enter this computer's IP and port 8080 in XRT-Client.
+python -m rby1_teleop.demos.teleop_xr --device xrt --backend auto
+
+# Optional bone CSV recording:
+python -m rby1_teleop.demos.teleop_xr --device xrt --record_data
+
+# Webcam: default models download once, then are reused from the user cache.
+uv pip install -e '../XRT_devices[mediapipe]'
+python -m rby1_teleop.demos.teleop_xr --device mediapipe \
+  --camera_id 0 --camera_display --backend auto
+```
+
+Simulation is the default. Use `--backend licensed` to require Rust, or
+`--backend mink` for public differential IK. MINK does not reproduce analytic
+TCP/C-SEW modes, finger retargeting or the SEW safety filter. MediaPipe currently
+drives arms/hands; torso, head and base commands are suppressed for camera input.
+Live webcam/headset validation remains pending. Close the viewer or press Ctrl-C
+to release the device and hardware connections.
+
+## Hardware (optional)
+
+Simulation remains the default and does not import vendor SDKs. Install the
+RB-Y1 hardware dependencies explicitly:
+
+```bash
+pip install -e '.[hw]'
+```
+
+The live demo follows the calling pattern of the monolith's
+`demo_rby1_xr_robot_teleop_v9_hw_all.py` and keeps the wheel base fixed:
+
+```bash
+python -m rby1_teleop.demos.teleop_xr --hw \
+    --robot_address 192.168.30.1:50051 \
+    --hand_serial_right /dev/ttyUSB0
+```
+
+Add `--hw_reset_ready` only when the area is clear and an intentional move to
+the ready pose is safe. Add `--hw_impedance` to use the impedance command
+builder instead of joint-position commands. The XHand vendor class is not on
+PyPI and is loaded lazily from `<monolith>/TeleVision`; omit both hand serial
+arguments for body-only hardware.
+
+Other projects can use the v9-compatible surface directly:
+
+```python
+from rby1_teleop.control.hw import RobotMwithBase
+
+RBY1 = RobotMwithBase(
+    address="192.168.30.1:50051",
+    servo=".*",
+    power_device=".*",
+    controller=None,
+)
+RBY1.reset_egoengine_ready_pose()  # explicit: this moves the robot
+state = RBY1.robot.get_state()     # same raw SDK access used by v9
+RBY1.send_joint_command_arms_head_base(
+    q_goal_left=q_left,
+    q_goal_right=q_right,
+    q_goal_torso=q_torso,
+    q_goal_head=q_head,
+    fix_base_pose=True,
+    min_time=0.05,
+)
+RBY1.shutdown()
+```
+
+Package-local hardware control intentionally rejects nonzero wheel deltas.
+The monolith's `rby1_api_utils.RobotMwithBase` remains necessary for mobile
+base motion because its separate feedback loop consumes live wheel odometry.
+
 ## Known external dependencies (interim)
 
-The live XR device and the CSV reader still live in the SEW-Geometric-Teleop
-monolith: point `--monolith_path` or `GEO_TELEOP_MONOLITH` at a checkout for
-`teleop_xr`, `--csv_file` replay, and `scripts/transcode_recording`. The
-`--hw` hardware path (rby1_sdk + XHand serial) is being ported into
-`rby1_teleop/control/hw` — until then hardware runs use the monolith's
-`demo_rby1_xr_robot_teleop_v9_hw_all.py`.
+XR, MediaPipe, CSV replay and transcoding use the shared public `xrt_devices`
+package. They have no private-checkout dependency. The XHand serial vendor class
+still needs its separately supplied legacy checkout via `--xhand_vendor_path`;
+that source is absent from this workspace and has not been repackaged.
+RB-Y1 body/head control is package-local under
+`rby1_teleop/control/hw` and installed with the `hw` extra.
+
+## Experimental collision-proxy tuning
+
+With a rebuilt licensed wheel that supports the optional overrides, live and
+offline replay accept:
+
+```bash
+--backend licensed --torso_upperarm_distances 0 0.015 0.025 --torso_radius_scale 0.99
+```
+
+Distances are minimum/activation/release in metres, applied only to torso versus
+upper-arm pairs. Radius scale multiplies both ends of the filter's tapered torso
+proxy: 0.99 changes 170/130 mm to 168.3/128.7 mm and affects all torso pairs.
+The robot model is not changed. These flags are opt-in; defaults remain unchanged.
+This combination removed large jumps in one 35-second simulation replay without
+detected self-contacts. It is not validated for hardware or other motions.
 
 ## Licensing
 
 MIT licensed. The SEW retargeting solver itself is patented & licensed
 separately (`geo_kin` wheel); this repo runs against the public fallback out
 of the box.
-
-## Citation
-
-If you use the retargeting solver, please cite the paper using the format published on the
-[project website](https://sew-mimic.com/):

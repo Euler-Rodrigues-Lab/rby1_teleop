@@ -15,20 +15,22 @@ dependencies = [
     "scipy",
     "mujoco",
     "geo-kin-core",
+    "xrt-devices>=0.1.0",
 ]
 
 [tool.uv.sources]
 geo-kin-core = { path = "external/geo_kin_core", editable = true }
+xrt-devices = { path = "../XRT_devices", editable = true }
 
 [tool.geo-kin]
 product = "rby1-xhand"
 
 [project.optional-dependencies]
-# Hardware: RB-Y1 SDK + XHand vendor stack (lazy imports under control/hw)
-hw = []
-# Device stack for live XR / CSV transcode is currently the monolith checkout
-# (GEO_TELEOP_MONOLITH); this extra will point at xrt_device once split out.
-devices = []
+# Hardware: RB-Y1 SDK. XHand's vendor class is loaded lazily from the interim
+# independently supplied TeleVision checkout because it is not published on PyPI.
+hw = ["rby1-sdk>=0.9,<0.10", "pyserial>=3.5"]
+devices = ["xrt-devices[xr,recording]", "geo-kin-core[fallback]"]
+mediapipe = ["xrt-devices[mediapipe]", "geo-kin-core[fallback]"]
 test = ["pytest"]
 
 [tool.setuptools.packages.find]

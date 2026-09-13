@@ -1,18 +1,5 @@
 # Copyright (c) 2026 Chuizheng Kong. Licensed under the MIT License.
-"""Transcode a recorded OpenXR CSV into a device-neutral geo_kin_core frame stream.
-
-The CSV format needs the monolith's device stack (pandas + xr_robot_teleop_server
-bone schemas); a frame stream is plain numpy and replays anywhere. Run this once
-to produce sample/regression data, then everything downstream — the offline
-replay demo, tests, public CI — reads the .npz and needs no device deps at all.
-
-Example::
-
-    python -m rby1_teleop.scripts.transcode_recording \\
-        --csv_file $GEO_TELEOP_MONOLITH/References/recordings/ipman_roll.csv \\
-        --out rby1_teleop/assets/sample_motion/ipman_roll.npz \\
-        --fps 60 --duration 8
-"""
+"""Transcode a public XRT CSV recording into a device-neutral NPZ frame stream."""
 
 import argparse
 
@@ -29,15 +16,13 @@ def parse_args():
     parser.add_argument("--start", type=float, default=0.0, help="Start time (s)")
     parser.add_argument("--duration", type=float, default=None,
                         help="Seconds to transcode (default: to the end)")
-    parser.add_argument("--monolith_path", default=None,
-                        help="SEW-Geometric-Teleop checkout (else GEO_TELEOP_MONOLITH)")
     parser.add_argument("--notes", default="", help="Free-text note stored in the stream")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    source = OfflineCSVAdapter(args.csv_file, loop=False, monolith_path=args.monolith_path)
+    source = OfflineCSVAdapter(args.csv_file, loop=False)
     duration = source.duration if args.duration is None else min(args.duration,
                                                                  source.duration - args.start)
     n = int(duration * args.fps)

@@ -15,7 +15,7 @@ def _args(**overrides):
         frames=None, csv_file=None, hand="xhand", retarget_mode="tcp",
         mobile_base=False, playback_speed=1.0, loop=True, max_fr=60,
         no_safety_filter=False, base_alignment="manual", keep_torso_yaw=False,
-        elbow_filter_hz=None, monolith_path=None, headless=True,
+        elbow_filter_hz=None, headless=True,
         max_frames=None, log_stats=None, no_human_overlay=True, wall_clock=False,
     )
     base.update(overrides)

@@ -1,46 +1,5 @@
 # Copyright (c) 2026 Chuizheng Kong. Licensed under the MIT License.
-"""RBY1 offline replay demo: recorded human motion -> retargeting -> MuJoCo.
-
-Port of the monolith demo_rby1_xr_robot_teleop_v3_offline.py (and the xhand
-variant) onto the geo_kin_core interface: solver =
-``resolve_session(robot='rby1', hand=...)`` (licensed `geo_kin` wheel ->
-private geo_kin_ref -> public fallback), controller =
-:class:`rby1_teleop.control.RBY1WithXHandMuJoCoController` (xhand) or
-:class:`rby1_teleop.control.RBY1MuJoCoController` (parallel gripper),
-overlays = :mod:`geo_kin_core.viz`.
-
-Two motion sources, same interface:
-
-* a **frame stream** (``--frames``, the default) — the vendored sample motion,
-  device-neutral numpy, needs nothing but this repo;
-* a **recorded CSV** (``--csv_file``) — needs a SEW-Geometric-Teleop checkout
-  for the device stack (``--monolith_path`` / ``GEO_TELEOP_MONOLITH``); use
-  ``rby1_teleop.scripts.transcode_recording`` to turn one into a frame stream.
-
-No headset and no robot required — this is the loop for tuning the solver,
-exercising the retarget modes (``--retarget_mode pose|tcp|left_elbow|
-right_elbow``), eyeballing the XPBD self-collision filter, and measuring solve
-time. Playback is kinematic (``update_kinematic``), so the robot follows goals
-exactly, and the recording is sampled on a fixed 1/max_fr clock so a replay is
-reproducible regardless of solve speed (--wall_clock restores wall-clock
-sampling).
-
-Kept from the monolith offline demo: torso joint 5 is zeroed by default (the
-omni-directional base owns that yaw; pass --keep_torso_yaw to disable), and
-base alignment defaults to 'manual' so the human-capsule overlay lands on the
-robot.
-
-Examples:
-    # Vendored sample motion, xhand, viewer + overlays (no setup)
-    python -m rby1_teleop.demos.replay_offline
-
-    # Functional (tcp) retargeting on a recorded CSV, mobile base enabled
-    python -m rby1_teleop.demos.replay_offline --retarget_mode tcp --mobile_base \
-        --csv_file $GEO_TELEOP_MONOLITH/References/recordings/ipman_roll.csv
-
-    # Headless timing/collision sweep over one pass, stats to npz
-    python -m rby1_teleop.demos.replay_offline --headless --no-loop --log_stats stats.npz
-"""
+"""Replay bundled NPZ frames or public XRT CSV recordings in simulation."""
 
 import argparse
 import sys
@@ -53,7 +12,7 @@ import numpy as np
 from geo_kin_core.session import resolve_session
 from geo_kin_core.viz import HumanCapsuleViz, capsules, draw_filtered_sew
 
-from rby1_teleop import SAMPLE_MOTION, XML_RBY1_MOCAP, XML_RBY1_XHAND
+from rby1_teleop import SAMPLE_MOTION, SPECS_DIR, XML_RBY1_MOCAP, XML_RBY1_XHAND
 from rby1_teleop.control import RBY1MuJoCoController, RBY1WithXHandMuJoCoController
 from rby1_teleop.input import open_motion_source
 
@@ -81,7 +40,7 @@ def parse_args():
                         help=f"geo_kin_core frame stream (.npz); default: the vendored "
                              f"sample motion ({SAMPLE_MOTION.name})")
     source.add_argument("--csv_file", default=None,
-                        help="Recorded OpenXR body-pose CSV (needs a monolith checkout)")
+                        help="Recorded OpenXR body-pose CSV (xrt-devices[recording])")
     parser.add_argument("--hand", choices=["xhand", "none"], default="xhand",
                         help="Hand embodiment (selects sim model + controller + hand IK)")
     parser.add_argument("--retarget_mode", default="tcp",
@@ -96,6 +55,12 @@ def parse_args():
                         help="Stop at the end of the recording instead of looping")
     parser.add_argument("--max_fr", type=int, default=60,
                         help="Solve/step rate cap in Hz")
+    parser.add_argument("--geometry_config", choices=["sf_tapered_capsule", "sf_tapered_capsule_xhand"],
+                        help="Licensed backend collision preset; xhand relaxes only torso/upper-arm pairs")
+    parser.add_argument("--torso_upperarm_distances", type=float, nargs=3, metavar=("MIN", "ACT", "REL"),
+                        help="Experimental licensed-backend pair distances in metres (requires rebuilt wheel)")
+    parser.add_argument("--torso_radius_scale", type=float,
+                        help="Experimental torso proxy radius multiplier; 1.0 unchanged (requires rebuilt wheel)")
     parser.add_argument("--no_safety_filter", action="store_true",
                         help="Disable the XPBD self-collision SEW filter")
     parser.add_argument("--base_alignment", choices=["manual", "mocap"], default="manual",
@@ -108,8 +73,7 @@ def parse_args():
     parser.add_argument("--elbow_filter_hz", type=float, default=None,
                         help="Stereographic elbow-angle low-pass cutoff (Hz); default off "
                              "(monolith default)")
-    parser.add_argument("--monolith_path", default=None,
-                        help="SEW-Geometric-Teleop checkout (else GEO_TELEOP_MONOLITH)")
+    parser.add_argument("--backend", choices=["auto", "licensed", "reference", "mink"], default="auto")
     parser.add_argument("--headless", action="store_true",
                         help="No viewer (timing/collision sweeps, CI)")
     parser.add_argument("--max_frames", type=int, default=None,
@@ -142,19 +106,25 @@ def build(args):
         csv_file=args.csv_file,
         playback_speed=args.playback_speed,
         loop=args.loop,
-        monolith_path=args.monolith_path,
     )
     print(f"Motion source: {source.describe()}")
     session = resolve_session(
         robot="rby1",
-        hand=hand,
+        backend=getattr(args, "backend", "auto"),
         model_xml=xml,
+        hand=hand,
         control_rate_hz=float(args.max_fr),
         elbow_filter_cutoff_hz=args.elbow_filter_hz,
         collision_avoidance=not args.no_safety_filter,
         retarget_mode=args.retarget_mode,
         base_alignment_mode=args.base_alignment,
         mobile_base=args.mobile_base,
+        spec_dir=SPECS_DIR,
+        **({"geometry_config": args.geometry_config} if getattr(args, "geometry_config", None) else {}),
+        **({"torso_upperarm_distances": tuple(args.torso_upperarm_distances)}
+           if getattr(args, "torso_upperarm_distances", None) else {}),
+        **({"torso_radius_scale": args.torso_radius_scale}
+           if getattr(args, "torso_radius_scale", None) is not None else {}),
     )
     print(f"Solver backend: {type(session).__module__}.{type(session).__name__}")
     controller = controller_cls(model, data, debug=False)
