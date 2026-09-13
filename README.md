@@ -8,6 +8,11 @@ hand=...)` picks the licensed `geo_kin` wheel, the private reference, or the
 public fallback, whichever is available — and everything around it lives here:
 MuJoCo models and controllers, device adapters, demos, and hardware glue.
 
+- **Project Web & Demos**: [https://sew-mimic.com/](https://sew-mimic.com/)
+- **Paper**: [A Closed-Form Geometric Retargeting Solver for Upper Body Humanoid Robot Teleoperation (arXiv:2602.01632)](https://arxiv.org/abs/2602.01632)
+- **Input Devices & Teleop Server**: [XRT_devices](https://github.com/Euler-Rodrigues-Lab/XRT_devices) | [XR-Robot-Teleop System](https://xr-robot-teleop-website.pages.dev/)
+- **WARP Embodiment**: [WARP Project](https://warp-retargeting.github.io)
+
 Retargeting scope: both arms + wrist orientation, the full 6-DOF torso, the
 2-DOF head, SE(2) mobile-base placement (spring-damper follow + stability
 clamp), XPBD self-collision filtering, and per-finger XHand IK. Retarget modes:
@@ -18,20 +23,14 @@ support lands next through the same session `hand=` switch.
 
 ## Install
 
-Keep the developing `XRT_devices` checkout beside this repository. For the current
-local migration (device changes are not published yet), install explicitly:
+Clone with submodules (or run `git submodule update --init --recursive` in an existing checkout):
 
 ```bash
+git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
 uv venv
-uv pip install -e 'external/geo_kin_core[fallback]' -e '../XRT_devices[xr,recording]' -e . pytest
+uv pip install -e 'external/geo_kin_core[fallback]' -e 'external/XRT_devices[xr,recording]' -e . pytest
 source .venv/bin/activate
-```
-
-Initialize the pinned core submodule if needed:
-
-```bash
-git submodule update --init --recursive
 ```
 
 The install includes `external/geo_kin_core`, the public fallback and
@@ -97,7 +96,7 @@ python -m rby1_teleop.demos.teleop_xr --device xrt --backend auto
 python -m rby1_teleop.demos.teleop_xr --device xrt --record_data
 
 # Webcam: default models download once, then are reused from the user cache.
-uv pip install -e '../XRT_devices[mediapipe]'
+uv pip install -e 'external/XRT_devices[mediapipe]'
 python -m rby1_teleop.demos.teleop_xr --device mediapipe \
   --camera_id 0 --camera_display --backend auto
 ```
@@ -163,28 +162,26 @@ base motion because its separate feedback loop consumes live wheel odometry.
 
 ## Known external dependencies (interim)
 
-XR, MediaPipe, CSV replay and transcoding use the shared public `xrt_devices`
-package. They have no private-checkout dependency. The XHand serial vendor class
+XR, MediaPipe, CSV replay and transcoding use the shared public [`XRT_devices`](https://github.com/Euler-Rodrigues-Lab/XRT_devices)
+submodule under `external/XRT_devices`. They have no private-checkout dependency. The XHand serial vendor class
 still needs its separately supplied legacy checkout via `--xhand_vendor_path`;
 that source is absent from this workspace and has not been repackaged.
 RB-Y1 body/head control is package-local under
 `rby1_teleop/control/hw` and installed with the `hw` extra.
 
-## Experimental collision-proxy tuning
+## Citation
 
-With a rebuilt licensed wheel that supports the optional overrides, live and
-offline replay accept:
+If you use this retargeting stack, RB-Y1 teleoperation setup, or SEW solver in your research, please cite:
 
-```bash
---backend licensed --torso_upperarm_distances 0 0.015 0.025 --torso_radius_scale 0.99
+```bibtex
+@article{kong2026closedform,
+  title={A Closed-Form Geometric Retargeting Solver for Upper Body Humanoid Robot Teleoperation},
+  author={Kong, Chuizheng and Cho, Yunho and Jung, Wonsuhk and Wibowo, Idris and Shinde, Parth and Vinodh-Sangeetha, Sundhar and Chung, Long Kiu and Chen, Zhenyang and others},
+  journal={arXiv preprint arXiv:2602.01632},
+  year={2026},
+  url={https://arxiv.org/abs/2602.01632}
+}
 ```
-
-Distances are minimum/activation/release in metres, applied only to torso versus
-upper-arm pairs. Radius scale multiplies both ends of the filter's tapered torso
-proxy: 0.99 changes 170/130 mm to 168.3/128.7 mm and affects all torso pairs.
-The robot model is not changed. These flags are opt-in; defaults remain unchanged.
-This combination removed large jumps in one 35-second simulation replay without
-detected self-contacts. It is not validated for hardware or other motions.
 
 ## Licensing
 
