@@ -29,10 +29,10 @@ def parse_args():
     parser.add_argument("--geometry_config", choices=["sf_tapered_capsule", "sf_tapered_capsule_xhand"],
                         help="Licensed backend collision preset; xhand relaxes only torso/upper-arm pairs")
     parser.add_argument("--torso_upperarm_distances", type=float, nargs=3, metavar=("MIN", "ACT", "REL"),
-                        default=(0.0, 0.015, 0.025),
-                        help="Experimental licensed-backend pair distances in metres (requires rebuilt wheel)")
-    parser.add_argument("--torso_radius_scale", type=float, default=0.99,
-                        help="Experimental torso proxy radius multiplier; 1.0 unchanged (requires rebuilt wheel)")
+                        default=None,
+                        help="Licensed backend pair distances in metres (default: 0, 0.015, 0.025)")
+    parser.add_argument("--torso_radius_scale", type=float, default=None,
+                        help="Torso proxy radius multiplier (default: 1.0 on the tuned proxy)")
     parser.add_argument("--no_safety_filter", action="store_true")
     parser.add_argument("--elbow_filter_hz", type=float, default=None)
     parser.add_argument("--keep_torso_yaw", action="store_true",
