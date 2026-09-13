@@ -28,9 +28,14 @@ Clone with submodules (or run `git submodule update --init --recursive` in an ex
 ```bash
 git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
-uv venv
-uv pip install -e 'external/geo_kin_core[fallback]' -e 'external/XRT_devices[xr,recording]' -e . pytest
+uv sync --extra devices --extra test
 source .venv/bin/activate
+```
+
+For camera/MediaPipe support or RB-Y1 hardware SDK:
+
+```bash
+uv sync --all-extras
 ```
 
 The install includes `external/geo_kin_core`, the public fallback and
