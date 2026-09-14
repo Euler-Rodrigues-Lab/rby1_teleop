@@ -20,7 +20,7 @@ from rby1_teleop.input import XRDeviceAdapter, MediaPipeDeviceAdapter
 def parse_args():
     parser = argparse.ArgumentParser(description="RBY1 XR teleoperation (sim)")
     parser.add_argument("--hand", choices=["xhand", "none"], default="xhand")
-    parser.add_argument("--retarget_mode", default="tcp",
+    parser.add_argument("--retarget_mode", default="pose",
                         choices=["pose", "tcp", "left_elbow", "right_elbow"])
     parser.add_argument("--mobile_base", action="store_true",
                         help="Enable SE(2) base placement")
@@ -38,7 +38,7 @@ def parse_args():
     parser.add_argument("--keep_torso_yaw", action="store_true",
                         help="Keep the solved torso joint 5 (default: zeroed, the "
                              "omni base owns that yaw)")
-    parser.add_argument("--device", choices=["xrt", "mediapipe"], default="xrt")
+    parser.add_argument("--device", choices=["xrt", "mediapipe"], default="mediapipe")
     parser.add_argument("--backend", choices=["auto", "licensed", "reference", "mink"], default="auto")
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8080)
