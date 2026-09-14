@@ -28,15 +28,28 @@ Clone with submodules (or run `git submodule update --init --recursive` in an ex
 ```bash
 git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
-uv sync --extra devices --extra test
+uv sync --locked --extra devices --extra mediapipe --extra test
 source .venv/bin/activate
 ```
 
-For camera/MediaPipe support or RB-Y1 hardware SDK:
+The command above installs Quest/WebRTC, webcam/MediaPipe and test dependencies
+for simulation. For a hardware-enabled environment, use this instead (also use
+it to restore an SDK removed by a simulation-only sync):
 
 ```bash
-uv sync --all-extras
+uv sync --locked --extra devices --extra mediapipe --extra test --extra hw
 ```
+
+`hw` includes `rby1-sdk` and `pyserial`. **Repeat `--extra hw` on subsequent
+syncs if you want to retain them:** `uv sync` removes packages not required by
+the selected extras. `uv sync --inexact` can preserve additional installed
+packages, but explicitly selecting your extras is more reproducible. Installing
+hardware dependencies does not enable robot commands; hardware operation still
+requires the demo's `--hw` flag.
+
+After syncing, run `python -m pytest -m "not geo"` in the activated environment
+to test without changing its installed dependencies. The licensed solver is
+provisioned separately below.
 
 The install includes `external/geo_kin_core`, the public fallback and
 the `geo-kin-provision` command. To use WARP, TCP/C-SEW, or another licensed
@@ -80,7 +93,7 @@ rby1_teleop/
 ## Try it without a headset or a robot
 
 ```bash
-pip install -e .
+# After completing Install above and activating .venv:
 python -m rby1_teleop.demos.replay_offline                      # viewer, xhand, tcp mode
 python -m rby1_teleop.demos.replay_offline --retarget_mode pose --mobile_base
 python -m rby1_teleop.demos.replay_offline --headless --no-loop --log_stats stats.npz
@@ -101,7 +114,7 @@ python -m rby1_teleop.demos.teleop_xr --device xrt --backend auto
 python -m rby1_teleop.demos.teleop_xr --device xrt --record_data
 
 # Webcam: default models download once, then are reused from the user cache.
-uv pip install -e 'external/XRT_devices[mediapipe]'
+# MediaPipe dependencies are included in the Install commands above.
 python -m rby1_teleop.demos.teleop_xr --device mediapipe \
   --camera_id 0 --camera_display --backend auto
 ```
@@ -119,7 +132,7 @@ Simulation remains the default and does not import vendor SDKs. Install the
 RB-Y1 hardware dependencies explicitly:
 
 ```bash
-pip install -e '.[hw]'
+uv sync --locked --extra devices --extra mediapipe --extra test --extra hw
 ```
 
 The live demo follows the calling pattern of the monolith's
