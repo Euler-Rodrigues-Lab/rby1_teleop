@@ -1,5 +1,25 @@
 # rby1_teleop
 
+## Shared Python dependencies
+
+`geo_kin_core` and `xrt_devices` now come from versioned PyPI wheels, not Git
+submodules. The tested versions for this checkout are:
+
+```bash
+python -m pip install "eurola-geo-kin-core==0.1.2" "eurola-xrt-devices==0.1.2"
+```
+
+Normal project installation (`uv sync` or `pip install` with the project and its
+local robot/simulator dependencies) selects these versions automatically. Imports
+and the `geo-kin-provision` command are unchanged. Other robot, simulator, and
+hardware submodules remain where needed; `--recurse-submodules` below is for those.
+The private `geo_kin` solver and its license are still supplied separately.
+
+For shared-library development, explicitly install matching source checkouts with
+`python -m pip install -e /path/to/geo_kin_core -e /path/to/XRT_devices` and run the
+venv's Python directly. A subsequent `uv sync` restores the released packages.
+
+
 Teleoperation for the Rainbow Robotics **RB-Y1** (dual 7-DOF arms, 6-DOF torso,
 2-DOF head, SE(2) omni base) with the **XHand** (12-DOF per hand), built on the
 closed-form SEW geometric retargeting stack. The solver is obtained through the
@@ -23,10 +43,10 @@ support lands next through the same session `hand=` switch.
 
 ## Install
 
-Clone with submodules (or run `git submodule update --init --recursive` in an existing checkout):
+Clone the repository and install its Python dependencies:
 
 ```bash
-git clone --recurse-submodules https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
+git clone https://github.com/Euler-Rodrigues-Lab/rby1_teleop.git
 cd rby1_teleop
 uv sync --locked --extra devices --extra mediapipe --extra test
 source .venv/bin/activate
@@ -51,7 +71,7 @@ After syncing, run `python -m pytest -m "not geo"` in the activated environment
 to test without changing its installed dependencies. The licensed solver is
 provisioned separately below.
 
-The install includes `external/geo_kin_core`, the public fallback and
+The install includes `eurola-geo-kin-core` from PyPI, the public fallback and
 the `geo-kin-provision` command. To use WARP, TCP/C-SEW, or another licensed
 mode, register the supplied RBY1/XHand wheel and license once per user, then
 link the central build here:
@@ -181,7 +201,7 @@ base motion because its separate feedback loop consumes live wheel odometry.
 ## Known external dependencies (interim)
 
 XR, MediaPipe, CSV replay and transcoding use the shared public [`XRT_devices`](https://github.com/Euler-Rodrigues-Lab/XRT_devices)
-submodule under `external/XRT_devices`. They have no private-checkout dependency. The XHand serial vendor class
+package `eurola-xrt-devices` from PyPI. They have no private-checkout dependency. The XHand serial vendor class
 still needs its separately supplied legacy checkout via `--xhand_vendor_path`;
 that source is absent from this workspace and has not been repackaged.
 RB-Y1 body/head control is package-local under

@@ -17,6 +17,6 @@ jobs:
           python-version: '${{ matrix.python }}'
       - run: uv venv
       - name: Install pinned core, public devices and robot
-        run: uv pip install -e 'external/geo_kin_core[fallback]' -e 'external/XRT_devices[xr,recording]' -e . pytest
+        run: uv pip install "eurola-geo-kin-core[fallback]==0.1.2" "eurola-xrt-devices[xr,recording]==0.1.2" -e . pytest
       - name: Public tests including solver fallback
         run: .venv/bin/python -m pytest -q -m 'not geo'

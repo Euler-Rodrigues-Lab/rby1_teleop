@@ -14,13 +14,9 @@ dependencies = [
     "numpy",
     "scipy",
     "mujoco",
-    "geo-kin-core",
-    "xrt-devices>=0.1.0",
+    "eurola-geo-kin-core==0.1.2",
+    "eurola-xrt-devices==0.1.2",
 ]
-
-[tool.uv.sources]
-geo-kin-core = { path = "external/geo_kin_core", editable = true }
-xrt-devices = { path = "external/XRT_devices", editable = true }
 
 [tool.geo-kin]
 product = "rby1-xhand"
@@ -29,8 +25,8 @@ product = "rby1-xhand"
 # Hardware: RB-Y1 SDK. XHand's vendor class is loaded lazily from the interim
 # independently supplied TeleVision checkout because it is not published on PyPI.
 hw = ["rby1-sdk>=0.9,<0.10", "pyserial>=3.5"]
-devices = ["xrt-devices[xr,recording]", "geo-kin-core[fallback]"]
-mediapipe = ["xrt-devices[mediapipe]", "geo-kin-core[fallback]"]
+devices = ["eurola-xrt-devices[xr,recording]==0.1.2", "eurola-geo-kin-core[fallback]==0.1.2"]
+mediapipe = ["eurola-xrt-devices[mediapipe]==0.1.2", "eurola-geo-kin-core[fallback]==0.1.2"]
 test = ["pytest"]
 
 [tool.setuptools.packages.find]
